@@ -17,14 +17,14 @@ from streamlit.logger import get_logger
 
 LOGGER = get_logger(__name__)
 
-
+#datatest-apps
 def run():
     st.set_page_config(
         page_title="Hello",
         page_icon="👋",
     )
 
-    st.write("# Welcome to Streamlit! 👋")
+    st.write("# Hello Word! 👋")
 
     st.sidebar.success("Select a demo above.")
 
@@ -45,6 +45,16 @@ def run():
         - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
     """
     )
+
+    #button do say hello
+    st.button("Reset", type="primary")
+    if st.button('Say hello'):
+     st.write('Why hello there')
+    else:
+      st.write('Goodbye')
+    
+
+    
 
 
 if __name__ == "__main__":
