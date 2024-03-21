@@ -5,7 +5,7 @@ from datetime import datetime, timedelta
 st.set_page_config(page_title="Sprint Metrics", page_icon="🤡", layout="wide")
 st.markdown("# Current Sprint")
 
-#rename side bar
+
 with st.sidebar:
     st.sidebar.header("Sprint metrics")
     uploaded_file2 = st.file_uploader("Sprint Tasks")
@@ -103,8 +103,34 @@ if uploaded_file1 is not None:
         else:
             if(df["Weighted Cycle Time"].astype(str).iloc[0] != '100%'):
                 
-                col11, col12 = st.columns([1, 2]) #seta o espaço de cada coluna
-                col11.write("### Tarefas não terminadas:")
-                df2_nextTask = df2_view[df2_view["Status"] == 'Next']
-                df2_nextTask = df2_nextTask.drop(columns=['Status', 'Início','Termino'])
-                col12.dataframe(df2_nextTask, hide_index=True)
+                    col11, col12 = st.columns([1, 2]) #seta o espaço de cada coluna
+                    col11.write("### Tarefas não terminadas:")
+                    df2_nextTask = df2_view[df2_view["Status"] == 'Next']
+                    col12.dataframe(df2_nextTask[["Tarefa","Responsável", "Prioridade", "Peso"]], hide_index=True)
+        
+        df2_grouped = df2[df2["Status"] == "Finished"].groupby("Assignee")["Task Weight"].sum().reset_index()
+        df2_grouped2 = df2[df2["Status"] == "Next"].groupby("Assignee")["Task Weight"].sum().reset_index()
+        df2_grouped.rename(columns={"Task Weight": "Pontos da Sprint", "Assignee": "Nome"}, inplace=True)
+        df2_grouped2.rename(columns={"Task Weight": "Pontos perdidos", "Assignee": "Nome"}, inplace=True)
+        df2_merged = pd.merge(df2_grouped, df2_grouped2, on="Nome", how="outer")
+        
+        
+        mid_index = len(df2_merged) // 2
+        col1, col2, col3 = st.columns(3)
+
+        # Exibir os dados na primeira coluna
+        for i in range(mid_index):
+            nome = df2_merged["Nome"].iloc[i]
+            pontos_sprint = int(df2_merged["Pontos da Sprint"].iloc[i]) if not pd.isna(df2_merged["Pontos da Sprint"].iloc[i]) else 0
+            pontos_perdidos = int(df2_merged["Pontos perdidos"].iloc[i]) if not pd.isna(df2_merged["Pontos perdidos"].iloc[i]) else 0
+            col1.metric(label=nome, value=pontos_sprint, delta=pontos_perdidos, delta_color="inverse")
+
+        # Exibir os dados na segunda coluna
+        for i in range(mid_index, len(df2_merged)):
+            nome = df2_merged["Nome"].iloc[i]
+            pontos_sprint = int(df2_merged["Pontos da Sprint"].iloc[i]) if not pd.isna(df2_merged["Pontos da Sprint"].iloc[i]) else 0
+            pontos_perdidos = int(df2_merged["Pontos perdidos"].iloc[i]) if not pd.isna(df2_merged["Pontos perdidos"].iloc[i]) else 0
+            col2.metric(label=nome, value=pontos_sprint, delta=pontos_perdidos, delta_color="inverse")
+
+        
+        col3.dataframe(df2_merged[["Nome","Pontos da Sprint", "Pontos perdidos"]],  hide_index=True)

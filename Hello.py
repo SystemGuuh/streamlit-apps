@@ -20,41 +20,22 @@ LOGGER = get_logger(__name__)
 #datatest-apps
 def run():
     st.set_page_config(
-        page_title="Hello",
-        page_icon="👋",
+        page_title="Eshows Data",
+        page_icon="🎤",
     )
 
-    st.write("# Hello Word! 👋")
-
-    st.sidebar.success("Select a demo above.")
+    st.write("# Sprints and data!")
 
     st.markdown(
         """
-        Streamlit is an open-source app framework built specifically for
-        Machine Learning and Data Science projects.
-        **👈 Select a demo from the sidebar** to see some examples
-        of what Streamlit can do!
-        ### Want to learn more?
-        - Check out [streamlit.io](https://streamlit.io)
-        - Jump into our [documentation](https://docs.streamlit.io)
-        - Ask a question in our [community
-          forums](https://discuss.streamlit.io)
+        Select an option:
+        - Sprint Metrics: upload .csv files to analise the data, files can be generated in our [Scrum Data Dheet](https://docs.google.com/spreadsheets/d/1QHdAKnDqC_1pfwPu89BH1-zxe0Saj8xhqqDfb5nl10Y/edit?usp=sharing)
         ### See more complex demos
         - Use a neural net to [analyze the Udacity Self-driving Car Image
           Dataset](https://github.com/streamlit/demo-self-driving)
         - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
     """
     )
-
-    #button do say hello
-    st.button("Reset", type="primary")
-    if st.button('Say hello'):
-     st.write('Why hello there')
-    else:
-      st.write('Goodbye')
-    
-
-    
 
 
 if __name__ == "__main__":

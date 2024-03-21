@@ -17,14 +17,15 @@ import time
 import numpy as np
 
 import streamlit as st
-from streamlit.hello.utils import show_code
+import pandas as pd
 
-
-def plotting_demo():
+#pensar numa forma de fazer isso aqui
+def plotting_demo(df):
     progress_bar = st.sidebar.progress(0)
     status_text = st.sidebar.empty()
     last_rows = np.random.randn(1, 1)
-    chart = st.line_chart(last_rows)
+    chart = st.line_chart(df, x=[" Total Story Points", "Estimated Effort"], y=None, color=["#FF0000", "#0000FF"]  # Optional
+)
 
     for i in range(1, 101):
         new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
@@ -42,15 +43,13 @@ def plotting_demo():
     st.button("Re-run")
 
 
-st.set_page_config(page_title="Plotting Demo", page_icon="📈")
-st.markdown("# Plotting Demo")
-st.sidebar.header("Plotting Demo")
-st.write(
-    """This demo illustrates a combination of plotting and animation with
-Streamlit. We're generating a bunch of random numbers in a loop for around
-5 seconds. Enjoy!"""
-)
+st.set_page_config(page_title="Plotting Sprint", page_icon="📈")
+st.markdown("# Plotting Sprint Data")
 
-plotting_demo()
+with st.sidebar:
+    st.sidebar.header("Plotting metrics")
+    uploaded_file = st.file_uploader("Sprint Metrics")
 
-show_code(plotting_demo)
+if uploaded_file is not None:
+    df = pd.read_csv(uploaded_file)
+    plotting_demo(df)
