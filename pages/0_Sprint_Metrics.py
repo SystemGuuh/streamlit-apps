@@ -132,5 +132,4 @@ if uploaded_file1 is not None:
             pontos_perdidos = int(df2_merged["Pontos perdidos"].iloc[i]) if not pd.isna(df2_merged["Pontos perdidos"].iloc[i]) else 0
             col2.metric(label=nome, value=pontos_sprint, delta=pontos_perdidos, delta_color="inverse")
 
-        
         col3.dataframe(df2_merged[["Nome","Pontos da Sprint", "Pontos perdidos"]],  hide_index=True)

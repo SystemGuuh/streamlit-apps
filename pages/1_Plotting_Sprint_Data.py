@@ -1,17 +1,3 @@
-# Copyright (c) Streamlit Inc. (2018-2022) Snowflake Inc. (2022)
-#
-# Licensed under the Apache License, Version 2.0 (the "License");
-# you may not use this file except in compliance with the License.
-# You may obtain a copy of the License at
-#
-#     http://www.apache.org/licenses/LICENSE-2.0
-#
-# Unless required by applicable law or agreed to in writing, software
-# distributed under the License is distributed on an "AS IS" BASIS,
-# WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# See the License for the specific language governing permissions and
-# limitations under the License.
-
 import time
 
 import numpy as np
@@ -21,26 +7,28 @@ import pandas as pd
 
 #pensar numa forma de fazer isso aqui
 def plotting_demo(df):
-    progress_bar = st.sidebar.progress(0)
-    status_text = st.sidebar.empty()
-    last_rows = np.random.randn(1, 1)
-    chart = st.line_chart(df, x=[" Total Story Points", "Estimated Effort"], y=None, color=["#FF0000", "#0000FF"]  # Optional
-)
+    with st.sidebar:
+        sprint_selected = st.selectbox("Sprint cicle:", ['Artistas','Contratantes'])
 
-    for i in range(1, 101):
-        new_rows = last_rows[-1, :] + np.random.randn(5, 1).cumsum(axis=0)
-        status_text.text("%i%% Complete" % i)
-        chart.add_rows(new_rows)
-        progress_bar.progress(i)
-        last_rows = new_rows
-        time.sleep(0.05)
+    df['Sprint'] = df['Sprint'].fillna('')
+    df_Points = df.drop(columns=['Sprint Start Date','Estimated Effort','Burndown Speed','Required Burndown Speed','Avarege Cycle Time','Weighted Cycle Time'])
+    #artista
+    if sprint_selected == 'Artistas':
+        df_Points = df_Points[df_Points['Sprint'].str.contains('A')]
+    if sprint_selected == 'Contratantes':
+        df_Points = df_Points[df_Points['Sprint'].str.contains('C')]
 
-    progress_bar.empty()
+    # Realizando a pivotagem
+    df_Points_pivot = df_Points.set_index('Sprint').stack().unstack(0)
 
-    # Streamlit widgets automatically run the script from top to bottom. Since
-    # this button is not connected to any other logic, it just causes a plain
-    # rerun.
-    st.button("Re-run")
+    st.dataframe(df_Points_pivot, hide_index=True)
+
+    if sprint_selected == 'Artistas':
+        df_Points['Sprint'] = df_Points['Sprint'].str.replace('A','').astype(int)
+    if sprint_selected == 'Contratantes':
+        df_Points['Sprint'] = df_Points['Sprint'].str.replace('C','').astype(int)
+    
+    st.line_chart(df_Points, x='Sprint', y=(' Total Story Points','Total Sprint Effort'), color=["#ffcc00", "#ff6600"])
 
 
 st.set_page_config(page_title="Plotting Sprint", page_icon="📈")
