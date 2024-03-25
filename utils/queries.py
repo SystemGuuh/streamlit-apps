@@ -1,0 +1,4 @@
+# Mostra tabela EPM_FILES_TYPE
+GET_EPM_FILES_TYPE = """
+SELECT * FROM EPM_FILES_TYPE;
+"""
