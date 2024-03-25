@@ -49,6 +49,7 @@ if uploaded_file2 is not None:
         df2_view = df2.drop(columns=['Sprint', 'Leadtime','Estimation Date','Estimate Leadtime','Weight to Burndown' ,'Leadtime * Weight', 'Notes/Comments'])
         df2_view.columns = ['Tarefa', 'Responsável','Prioridade','Peso','Início','Termino','Status','Dependência']
         
+        
         if not Task:
             df2_view.drop(columns=['Tarefa'], inplace=True)
 
@@ -102,11 +103,14 @@ if uploaded_file1 is not None:
             st.warning('Se quiser ver mais dados, mande o arquivo SprintTasks.csv', icon="⚠️")
         else:
             if(df["Weighted Cycle Time"].astype(str).iloc[0] != '100%'):
+                col11, col12 = st.columns([1, 2]) #seta o espaço de cada coluna
+                col11.write("### Tarefas não terminadas:")
+
+                df2_view = df2.drop(columns=['Sprint', 'Leadtime','Estimation Date','Estimate Leadtime','Weight to Burndown' ,'Leadtime * Weight', 'Notes/Comments'])
+                df2_view.columns = ['Tarefa', 'Responsável','Prioridade','Peso','Início','Termino','Status','Dependência']
                 
-                    col11, col12 = st.columns([1, 2]) #seta o espaço de cada coluna
-                    col11.write("### Tarefas não terminadas:")
-                    df2_nextTask = df2_view[df2_view["Status"] == 'Next']
-                    col12.dataframe(df2_nextTask[["Tarefa","Responsável", "Prioridade", "Peso"]], hide_index=True)
+                df2_nextTask = df2_view[df2_view["Status"] == 'Next']
+                col12.dataframe(df2_nextTask[["Tarefa","Responsável", "Prioridade", "Peso"]], hide_index=True)
         
         df2_grouped = df2[df2["Status"] == "Finished"].groupby("Assignee")["Task Weight"].sum().reset_index()
         df2_grouped2 = df2[df2["Status"] == "Next"].groupby("Assignee")["Task Weight"].sum().reset_index()
