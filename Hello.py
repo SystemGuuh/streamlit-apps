@@ -24,16 +24,14 @@ def run():
         page_icon="🎤",
     )
 
-    st.write("# Sprints and data!")
+    st.write("# Sprints and Database data!")
 
     st.markdown(
         """
         Select an option:
-        - Sprint Metrics: upload .csv files to analise the data, files can be generated in our [Scrum Data Dheet](https://docs.google.com/spreadsheets/d/1QHdAKnDqC_1pfwPu89BH1-zxe0Saj8xhqqDfb5nl10Y/edit?usp=sharing)
-        ### See more complex demos
-        - Use a neural net to [analyze the Udacity Self-driving Car Image
-          Dataset](https://github.com/streamlit/demo-self-driving)
-        - Explore a [New York City rideshare dataset](https://github.com/streamlit/demo-uber-nyc-pickups)
+        - Sprint Metrics: upload .csv files to analise the a sprint data, files can be generated in our [Scrum Data Dheet](https://docs.google.com/spreadsheets/d/1QHdAKnDqC_1pfwPu89BH1-zxe0Saj8xhqqDfb5nl10Y/edit?usp=sharing)
+        - Sprint Data: upload .csv files to analise the data from every sprint, files can be generated in our [Scrum Data Dheet](https://docs.google.com/spreadsheets/d/1QHdAKnDqC_1pfwPu89BH1-zxe0Saj8xhqqDfb5nl10Y/edit?usp=sharing)
+        - Database: page connected to our database, its possible to run querys and analise data
     """
     )
 
