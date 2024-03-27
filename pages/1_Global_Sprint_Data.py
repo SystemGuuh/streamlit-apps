@@ -3,8 +3,17 @@ import numpy as np
 import streamlit as st
 import pandas as pd
 import matplotlib.pyplot as plt
+from utils.sheets import *
 
-def plotting_demo(df):
+# Pensar em como armazenar o resultado da primeira chamada da função getGSheet, se não teremos erro de requisição excessiva
+def getGSheet():
+    # Pegando planilha do google sheets
+    gsheets_reader = GSheetsReader()
+    sprintMetrics = gsheets_reader.sprintMetrics()
+    sprintMetrics = sprintMetrics.drop(columns=[col for col in sprintMetrics.columns if 'Unnamed' in col])
+    return sprintMetrics
+
+def plotting_Data(df):
     with st.sidebar:
         sprint_selected = st.selectbox("Sprint cicle:", ['Artistas','Contratantes'])
 
@@ -46,10 +55,11 @@ def plotting_demo(df):
 
     st.divider()
     st.markdown("## 3. Relação % completa da sprint")
-    #removendo % e adicionand coluna de 100%
+
+    #ajustando % e adicionando coluna de 100%
     df_Porcent['Complete'] = 100
-    df_Porcent['Avarege Cycle Time'] = df_Porcent['Avarege Cycle Time'].str.replace('%','').astype(float)
-    df_Porcent['Weighted Cycle Time'] = df_Porcent['Weighted Cycle Time'].str.replace('%','').astype(float)
+    df_Porcent['Avarege Cycle Time'] = df_Porcent['Avarege Cycle Time']*100
+    df_Porcent['Weighted Cycle Time'] = df_Porcent['Weighted Cycle Time']*100
 
 
     # Realizando a pivotagem
@@ -67,16 +77,7 @@ def plotting_demo(df):
     st.dataframe(df_Porcent_pivot, hide_index=True)
     st.bar_chart(df_Porcent, x='Sprint', y=('Weighted Cycle Time','Remaining'), color=["#ffcc00", "#ff6600"])
 
-
-
-
 st.set_page_config(page_title="Plotting Sprint", page_icon="📈")
 st.markdown("# Plotting Sprint Data")
 
-with st.sidebar:
-    st.sidebar.header("Plotting metrics")
-    uploaded_file = st.file_uploader("Sprint Metrics")
-
-if uploaded_file is not None:
-    df = pd.read_csv(uploaded_file)
-    plotting_demo(df)
+plotting_Data(getGSheet())
