@@ -19,5 +19,13 @@ def getBoardData():
     query2 = '{boards(limit:1) { name id description items { name column_values{title id type text } } } }'
     data = {'query' : query2}
 
-    r = requests.post(url=apiUrl, json=data, headers=headers) # make request
+    r = requests.post(url=apiUrl, json=data, headers=headers)
+    return r.json()
+
+def makeRequestByQuery(query):
+    headers = {"Authorization": load_api_key()} 
+    query3 = query
+    apiUrl = "https://api.monday.com/v2"
+    data = {'query' : query3}
+    r = requests.post(url=apiUrl, json=data, headers=headers)
     return r.json()
