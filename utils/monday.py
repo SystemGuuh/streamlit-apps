@@ -1,26 +1,23 @@
 import toml
 import requests
+import streamlit as st
 
 def load_api_key():
-    # Carrega as informações do arquivo secrets.toml
-    try:
-        with open('secrets.toml', 'r') as f:
-            secrets = toml.load(f)
-            api_key = secrets['monday']['api_key']
-            return api_key
-    except FileNotFoundError:
-        print("Arquivo secrets.toml não encontrado.")
-        return None
-    except KeyError:
-        print("Chave 'api_key' não encontrada no arquivo secrets.toml.")
-        return None
+    return st.secrets['monday']['api_key']
 
-# Informações de autenticação para a conexão com a API do Monday.com
-apiUrl = "https://api.monday.com/v2"
-headers = {"Authorization": load_api_key()}
-
-def get_board_info():
-    query = '{boards(limit:1) { name id description items { name column_values{title id type text } } } }'
+def getBoardResponse():
+    headers = {"Authorization": load_api_key()} 
+    apiUrl = "https://api.monday.com/v2"
+    query = '{boards {name id} }'
     data = {'query': query}
-    response = requests.post(url=apiUrl, json=data, headers=headers)
+    response = requests.get(url=apiUrl, json=data, headers=headers)
     return response.json()
+
+def getBoardData():
+    headers = {"Authorization": load_api_key()} 
+    apiUrl = "https://api.monday.com/v2"
+    query2 = '{boards(limit:1) { name id description items { name column_values{title id type text } } } }'
+    data = {'query' : query2}
+
+    r = requests.post(url=apiUrl, json=data, headers=headers) # make request
+    return r.json()

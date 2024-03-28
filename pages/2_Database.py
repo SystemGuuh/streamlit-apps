@@ -11,16 +11,22 @@ def consultBarChart(consulta, conn):
     column_name = df.columns.tolist()
     st.bar_chart(df, x=str(column_name[0]), y=str(column_name[1]))
 
+def getDfFromQuery(consulta, conn):
+    return conn.query(consulta, ttl=0)
 
 def consultArtistas(conn):
-
     st.write("Quantidade de projetos por estilo musical:")
     consultBarChart(GET_ESTILOS_POR_PROJETO, conn)
 
-    st.write("Quantidade de usuários por UF:")
-    consultBarChart(GET_USER_POR_LOCAL, conn)
+    col1, col2 = st.columns([4,1])
+    with col1:
+        st.write("Quantidade de usuários por UF:")
+        consultBarChart(GET_USER_POR_LOCAL, conn)
+    with col2:
+        distinct_uf = getDfFromQuery(GET_USER_POR_LOCAL, conn)
+        sprint_selected = st.selectbox("", distinct_uf["UF"].unique().tolist())
+        st.write("Quantidade: ", distinct_uf.loc[distinct_uf['UF'] == sprint_selected, 'Quantidade'].values[0])
 
-    #Artistas por local
     #Artistas novos ao longo dos meses
     #Cache médio de artistas por local
     #Shows por local
