@@ -1,9 +1,7 @@
-pkg-config
 altair
 numpy
 pandas
 pydeck
 streamlit
 matplotlib
-mysqlclient
 SQLAlchemy
