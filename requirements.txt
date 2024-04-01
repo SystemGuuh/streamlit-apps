@@ -6,4 +6,4 @@ streamlit
 matplotlib
 mysqlclient
 SQLAlchemy
-import mysql.connector
+mysql.connector

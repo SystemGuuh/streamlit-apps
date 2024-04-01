@@ -26,21 +26,18 @@ def consultArtistas(conn):
         distinct_uf = getDfFromQuery(GET_USER_POR_LOCAL, conn)
         sprint_selected = st.selectbox("", distinct_uf["UF"].unique().tolist())
         st.write("Quantidade: ", distinct_uf.loc[distinct_uf['UF'] == sprint_selected, 'Quantidade'].values[0])
-
     #Artistas novos ao longo dos meses
     #Cache médio de artistas por local
     #Shows por local
 
+def consultContratantes(conn):
+    st.write("amora")
     ## CONTRATANTES
-    #Contratos pela plataforma por contratante
     #Contratante por local
     #Estilo mais contratado
     #Novos contratantes por mes
     #Cache médio de contratante por regiao
     #Contratos por região
-
-def consultContratantes(conn):
-    st.write("amora")
 
 
 st.set_page_config(page_title="Database", page_icon="📊")
