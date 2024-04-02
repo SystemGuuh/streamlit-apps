@@ -31,10 +31,12 @@ def consultArtistas(conn):
     #Shows por local
 
 def consultContratantes(conn):
-    st.write("amora")
-    ## CONTRATANTES
+    st.write("Quantidade de propostas por estilo musical:")
+    consultBarChart(GET_ESTILOS_POR_PROPOSTA, conn)
+
+    st.write("Cache médio por UF:")
+    consultBarChart(GET_CACHE_MEDIO_OPORTUNIDADES, conn)
     #Contratante por local
-    #Estilo mais contratado
     #Novos contratantes por mes
     #Cache médio de contratante por regiao
     #Contratos por região

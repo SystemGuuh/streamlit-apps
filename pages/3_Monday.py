@@ -4,6 +4,11 @@ import pandas as pd
 from monday import MondayClient
 
 
+def processDataFromARequest(response_data):
+    #pensar numa logica para pegar os dados e colocar em diferentes dataframes
+    st.write("Building...")
+
+
 st.set_page_config(page_title="Plotting Sprint", page_icon="🗂️")
 st.markdown("# Connecting to Monday API")
 
@@ -11,7 +16,28 @@ st.markdown("# Connecting to Monday API")
 monday = MondayClient(load_api_key())
 boardQuery = monday.boards.fetch_boards_by_id(6303323231)
 
-#internal server error 500
-df = pd.json_normalize(makeRequestByQuery(boardQuery))
-st.dataframe(df)
-st.write(makeRequestByQuery(boardQuery))
+
+response_data = makeRequestByQuery("""
+        query {
+            boards (ids: 6303323231) {
+                groups {
+                    title
+                    id
+                }
+                items_page{
+                        items {
+                            name 
+                        column_values {
+                        column {
+                            title
+                        } 
+                        text 
+                        } 
+                    }
+                }
+            }
+        }
+        """)
+
+st.write(response_data)
+processDataFromARequest(response_data)

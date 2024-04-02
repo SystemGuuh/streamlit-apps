@@ -19,22 +19,27 @@ def plotting_Data(df):
     df['Sprint'] = df['Sprint'].fillna('')
     df_Points = df.drop(columns=['Sprint Start Date','Estimated Effort','Burndown Speed','Required Burndown Speed','Avarege Cycle Time','Weighted Cycle Time'])
     df_Porcent = df.drop(columns=['Sprint Start Date','Estimated Effort','Burndown Speed',' Total Story Points','Total Sprint Effort','Required Burndown Speed'])
+    df_Complete = df.drop(columns=['Sprint Start Date','Estimated Effort','Burndown Speed',' Total Story Points','Total Sprint Effort','Required Burndown Speed', 'Avarege Cycle Time', 'Weighted Cycle Time'])
     
     #Separando dados artistas e contratantes
     if sprint_selected == 'Artistas':
         df_Points = df_Points[df_Points['Sprint'].str.contains('A')]
         df_Porcent = df_Porcent[df_Porcent['Sprint'].str.contains('A')]
+        df_Complete = df_Complete[df_Complete['Sprint'].str.contains('A')]
     if sprint_selected == 'Contratantes':
         df_Points = df_Points[df_Points['Sprint'].str.contains('C')]
         df_Porcent = df_Porcent[df_Porcent['Sprint'].str.contains('C')]
+        df_Complete = df_Complete[df_Complete['Sprint'].str.contains('C')]
 
     #removendo caracter A ou C da coluna Sprint
     if sprint_selected == 'Artistas':
         df_Points['Sprint'] = df_Points['Sprint'].str.replace('A','').astype(int)
         df_Porcent['Sprint'] = df_Porcent['Sprint'].str.replace('A','').astype(int)
+        df_Complete['Sprint'] = df_Complete['Sprint'].str.replace('A','').astype(int)
     if sprint_selected == 'Contratantes':
         df_Points['Sprint'] = df_Points['Sprint'].str.replace('C','').astype(int)
         df_Porcent['Sprint'] = df_Porcent['Sprint'].str.replace('C','').astype(int)
+        df_Complete['Sprint'] = df_Complete['Sprint'].str.replace('C','').astype(int)
 
     # Realizando a pivotagem
     df_Points_pivot = df_Points.set_index('Sprint').stack().unstack(0)
@@ -53,7 +58,7 @@ def plotting_Data(df):
     st.bar_chart(df_Points, x='Sprint', y=(' Total Story Points','Lost Points'), color=["#ffcc00", "#ff6600"])
 
     st.divider()
-    st.markdown("## 3. Relação % completa da sprint")
+    st.markdown("## 3. Relação % usada da sprint")
 
     #ajustando % e adicionando coluna de 100%
     df_Porcent['Complete'] = 100
@@ -62,19 +67,31 @@ def plotting_Data(df):
 
 
     # Realizando a pivotagem
-    df_aux = df_Porcent.drop(columns=['Avarege Cycle Time', 'Complete'])
+    df_aux = df_Porcent.drop(columns=['Avarege Cycle Time', 'Complete', 'Percent Complete'])
     df_Porcent_pivot = df_aux.set_index('Sprint').stack().unstack(0)
     st.dataframe(df_Porcent_pivot, hide_index=True)
     st.line_chart(df_Porcent, x='Sprint', y=('Avarege Cycle Time','Weighted Cycle Time', 'Complete'), color=["#ffcc00", "#fc0f03","#ff6600"])
 
     st.divider()
-    st.markdown("## 4. Relação Porcentagem não completa")
+    st.markdown("## 4. Relação Porcentagem de tempo não usado")
     df_Porcent['Remaining'] = df_Porcent['Complete'] - df_Porcent['Weighted Cycle Time']
-    df_Porcent = df_Porcent.drop(columns=['Avarege Cycle Time', 'Complete'])
+    df_Porcent = df_Porcent.drop(columns=['Avarege Cycle Time', 'Complete', 'Percent Complete'])
      # Realizando a pivotagem
     df_Porcent_pivot = df_Porcent.set_index('Sprint').stack().unstack(0)
     st.dataframe(df_Porcent_pivot, hide_index=True)
     st.bar_chart(df_Porcent, x='Sprint', y=('Weighted Cycle Time','Remaining'), color=["#ffcc00", "#ff6600"])
+
+    st.divider()
+    st.markdown("## 5. Porcentagem completa da sprint")
+    df_Complete['Complete'] = 100
+    df_Complete['Percent Complete'] = df_Complete['Percent Complete']*100
+
+
+    # Realizando a pivotagem
+    df_aux = df_Complete.drop(columns=['Complete'])
+    df_Complete_pivot = df_aux.set_index('Sprint').stack().unstack(0)
+    st.dataframe(df_Complete_pivot, hide_index=True)
+    st.line_chart(df_Complete, x='Sprint', y=('Complete', 'Percent Complete'), color=["#fc0f03", "#ffcc00"])
 
 st.set_page_config(page_title="Plotting Sprint", page_icon="📈")
 st.markdown("# Plotting Sprint Data")
