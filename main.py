@@ -23,16 +23,33 @@ def show_login_page():
     password = st.text_input(label="", value="", placeholder="Enter password", type="password")
     st.button("Login", on_click=handle_login, args=(userName, password))
 
+def hide_sidebar():
+    st.markdown("""
+    <style>
+        section[data-testid="stSidebar"][aria-expanded="true"]{
+            display: none;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
+def show_sidebar():
+    st.markdown("""
+    <style>
+        section[data-testid="stSidebar"][aria-expanded="true"]{
+            display: true;
+        }
+    </style>
+    """, unsafe_allow_html=True)
+
 def main():
+    hide_sidebar()
     if 'loggedIn' not in st.session_state:
         st.session_state['loggedIn'] = False
-
-    # Conditionally hide the sidebar based on login state
-    st.sidebar.visible = st.session_state['loggedIn']
 
     if not st.session_state['loggedIn']:
         show_login_page()
     else:
+        show_sidebar()
         show_main_page()
 
 if __name__ == '__main__':
