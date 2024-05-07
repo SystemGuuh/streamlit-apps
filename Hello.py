@@ -1,27 +1,39 @@
 import streamlit as st
-from streamlit.logger import get_logger
+from utils.user import login
 
-LOGGER = get_logger(__name__)
-
-#datatest-apps
-def run():
-    st.set_page_config(
-        page_title="Eshows Data",
-        page_icon="🎤",
-    )
-
-    st.write("# Sprints and Database data!")
-
-    st.markdown(
-        """
+def show_main_page():
+    st.markdown("""
         Select an option:
         - Sprint Metrics: upload .csv files to analise the a sprint data, files can be generated in our [Scrum Data Dheet](https://docs.google.com/spreadsheets/d/1QHdAKnDqC_1pfwPu89BH1-zxe0Saj8xhqqDfb5nl10Y/edit?usp=sharing)
         - Sprint Data: upload .csv files to analise the data from every sprint, files can be generated in our [Scrum Data Dheet](https://docs.google.com/spreadsheets/d/1QHdAKnDqC_1pfwPu89BH1-zxe0Saj8xhqqDfb5nl10Y/edit?usp=sharing)
         - Database: page connected to our database, its possible to run querys and analise data
         - Monday: page to see data colected from monday API(flow de radar)
-    """
-    )
+    """)
 
+def handle_login(userName, password):
+    if login(userName, password):
+        st.session_state['loggedIn'] = True
+    else:
+        st.session_state['loggedIn'] = False
+        st.error("Invalid user name or password")
 
-if __name__ == "__main__":
-    run()
+def show_login_page():
+    st.write("# Sprints and Database data!")
+    userName = st.text_input(label="", value="", placeholder="Enter your user name")
+    password = st.text_input(label="", value="", placeholder="Enter password", type="password")
+    st.button("Login", on_click=handle_login, args=(userName, password))
+
+def main():
+    if 'loggedIn' not in st.session_state:
+        st.session_state['loggedIn'] = False
+
+    # Conditionally hide the sidebar based on login state
+    st.sidebar.visible = st.session_state['loggedIn']
+
+    if not st.session_state['loggedIn']:
+        show_login_page()
+    else:
+        show_main_page()
+
+if __name__ == '__main__':
+    main()
